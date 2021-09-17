@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+
+""" Equals
+
+Usage: 
+    equals [options] <infile>
+
+"""
+
+import re
+import subprocess
+import fileinput
+from docopt import docopt
+
+TAG = '#='
+
+def main():
+
+    lines = []
+    with fileinput.input(files=[opt['<infile>']]) as f:
+        for line in f:
+            lines.append(line[:-1])
+
+
+    new_lines = []
+
+    # Add print after each line with tag
+    for i, line in enumerate(lines):
+        new_lines.append(line)
+        if '#=' in line:
+            index = line.index(TAG)
+            line = 'print("_equals:", ' + str(i) + ',' + line[:index].strip() + ')'
+            new_lines.append(line)
+
+    text = '\n'.join(new_lines)
+
+    stdout, _ = execute(text)
+
+    for out_line in stdout.split('\n'):
+        if out_line.startswith('_equals:'):
+            i, value = parse_output(out_line)
+            lines[i] = add_value(lines[i], value, TAG)
+
+    print('\n'.join(lines), end='')
+
+
+def execute(text):
+
+    process = subprocess.Popen(
+            ['python'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+    )
+
+    stdout, stderr = process.communicate(input=text.encode())
+
+    return stdout.decode(), stderr.decode()
+
+
+def parse_output(line):
+    parts = line.split(' ')
+    return int(parts[1]), int(parts[2])
+
+
+def add_value(line, value, tag='#='):
+    i = line.index(tag)
+    return line[:(i+len(tag))] + " " + str(value)
+
+
+if __name__ == "__main__":
+    opt = docopt(__doc__)
+    main()
