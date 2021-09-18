@@ -44,7 +44,8 @@ def main():
         new_lines.append(line)
         if '#=' in line:
             index = line.index(TAG)
-            line = 'print("_equals:", ' + str(i) + ',' + line[:index].strip() + ')'
+            expr = line[:index].strip()
+            line = gen_print_line(expr, i, index + len(TAG) + 2)
             new_lines.append(line)
 
     # execute the modified code
@@ -59,9 +60,9 @@ def main():
 
     # process the output
     for out_line in stdout.split('\n'):
-        if out_line.startswith('_equals:'):
-            i, value = parse_output(out_line)
-            lines[i] = add_value(lines[i], value, TAG)
+        if is_print_output(out_line):
+            i, start, end, value = parse_print_output(out_line)
+            lines[i] = add_value(lines[i], start, end, value)
 
     # output
     src = '\n'.join(lines)
@@ -72,7 +73,7 @@ def main():
         print(src, end='')
 
 
-def execute(text):
+def execute(text: str):
 
     process = subprocess.Popen(
             ['python'],
@@ -86,14 +87,32 @@ def execute(text):
     return stdout.decode(), stderr.decode()
 
 
-def parse_output(line):
-    parts = line.split(' ')
-    return int(parts[1]), int(parts[2])
+def gen_print_line(expr: str, line: int, start: int, end: int=-1):
+
+    fmt_str = '_equals: {},{},{},{}'
+    line = f"print('{fmt_str}'.format({line}, {start}, {end}, {expr}))"
+    return line
+
+def is_print_output(s: str):
+    return s.startswith('_equals')
 
 
-def add_value(line, value, tag='#='):
-    i = line.index(tag)
-    return line[:(i+len(tag))] + " " + str(value)
+def parse_print_output(s: str):
+
+    s = s[len('_equals:'):].strip()
+    p1, p2, p3, *rest = s.split(',')
+
+    # parse int
+    line, start, end = int(p1), int(p2), int(p3)
+
+    # hacky solusion for , in a value
+    value = ','.join(rest)
+
+    return line, start, end, value
+
+
+def add_value(line, start, end, value):
+    return line[:(start)] + " " + str(value)
 
 
 if __name__ == "__main__":
