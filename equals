@@ -10,13 +10,14 @@ Options:
     -i, --in-place                  Edit file in place
     -o OUTFILE, --output OUTFILE    Output to a file
     -e, --edits
-
+    -d, --debug
 """
 
 import re
 import subprocess
 import fileinput
 import sys
+import logging
 from docopt import docopt
 
 TAG = '#='
@@ -38,19 +39,12 @@ def main():
         for line in f:
             lines.append(line[:-1])
 
-    # Add print after each line with tag
-    new_lines = []
-    for i, line in enumerate(lines):
-        new_lines.append(line)
-        if '#=' in line:
-            index = line.index(TAG)
-            expr = line[:index].strip()
-            line = gen_print_line(expr, i, index + len(TAG) + 2)
-            new_lines.append(line)
+    lines_ = preprocess_python(lines)
+
 
     # execute the modified code
-    text = '\n'.join(new_lines)
-    stdout, stderr = execute(text)
+    text = '\n'.join(lines_)
+    stdout, stderr = execute_python(text)
 
     # print error and exit if there is one
     if stderr:
@@ -58,11 +52,17 @@ def main():
         print(stderr, file=sys.stderr)
         return
 
-    # process the output
-    for out_line in stdout.split('\n'):
-        if is_print_output(out_line):
-            i, start, end, value = parse_print_output(out_line)
-            lines[i] = add_value(lines[i], start, end, value)
+    # post processing
+    updates = postprocess_python(stdout.split('\n'))
+
+    # edits
+    if opt['--edits']:
+        for edit in updates:
+            print(edit)
+        return
+
+    # appli updates
+    lines = apply_updates(lines, updates)
 
     # output
     src = '\n'.join(lines)
@@ -73,7 +73,7 @@ def main():
         print(src, end='')
 
 
-def execute(text: str):
+def execute_python(text: str):
 
     process = subprocess.Popen(
             ['python'],
@@ -97,9 +97,6 @@ def gen_print_line(expr: str, line: int, start: int, end: int=-1):
     line = f"print('{fmt_str}'.format({line}, {start}, {end}, {expr}))"
     return line
 
-def is_print_output(s: str):
-    return s.startswith('_equals')
-
 
 def parse_print_output(s: str):
 
@@ -115,10 +112,43 @@ def parse_print_output(s: str):
     return line, start, end, value
 
 
-def add_value(line, start, end, value):
-    return line[:(start)] + " " + str(value)
+def preprocess_python(lines_in:list[str]):
+    lines_out = []
 
+    for i, line in enumerate(lines_in):
+        lines_out.append(line)
+        if TAG in line:
+            start = line.index(TAG)
+            expr = line[:start].strip()
+            start = start + len(TAG)
+            try:
+                end = start + line[start:].index('#')
+            except ValueError:
+                end = -1
+            line = gen_print_line(expr, i, start, end)
+            lines_out.append(line)
+    return lines_out
+
+
+def postprocess_python(lines_in:list[str]):
+    updates = []
+    for line in lines_in:
+        if line.startswith('_equals:'):
+            updates.append(parse_print_output(line))
+    return updates
+
+def apply_updates(lines:list[str], updates:list):
+    for update in updates:
+        i, s, e, v = update
+        line = lines[i]
+        if e >= 0:
+            lines[i] = line[:s] + " " + v + " " + line[e:]
+        else:
+            lines[i] = line[:s] + " " + v
+    return lines
 
 if __name__ == "__main__":
     opt = docopt(__doc__)
+    log = logging.getLogger('equals')
+    logging.basicConfig(level='DEBUG' if opt['--debug'] else 'INFO')
     main()

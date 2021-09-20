@@ -1,29 +1,22 @@
 import datetime
-import pint
 import numpy as np
-
-ureg = pint.UnitRegistry(auto_reduce_dimensions=True)
 
 def addone(x):
     return x+1
 
-a = 1
-b = 3
-a + b #= 4
-a + a #= 2
+a = 2
+b = 8
+a + b #= 10
+a + a #= 4
 
-addone(a) #= 2
+addone(a) #= 3
 
-datetime.datetime.now() #=
+datetime.datetime.now() #= 2021-09-20 23:18:30.688801
 
 c = a + b
-c #=
+c #= 10
 
-a = 10 * ureg('V')
-a #=
+a = 1 + 3 #= 4
 
-a = np.array([1, 2, 3])
-a * 10 #=
 
-a = 1 + 3 #=
-
+np.array([[12],[3],[4]]) #= [[12] # test
