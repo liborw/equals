@@ -8,16 +8,27 @@ Equals is simple tool that evaluates source code, and places intermediate result
 Command line
 
 ```sh
-$ equals test/test.py
+$ equals -h
 
+ Equals a proof of concept
 
+Usage:
+    equals [options] <infile>
+    equals [options] -
+
+Options:
+    -i, --in-place                  Edits file in place
+    -o OUTFILE, --output OUTFILE    Output to a file
+    -e, --edits
 ```
+
 
 In vim
 
+
 ## Roadmap
 
- - [ ] Support for assignments i.e. `a = 1 + 2 #= 3`
+ - [x] Support for assignments i.e. `a = 1 + 2 #= 3`
  - [ ] Multiline results
  - [ ] Markdown support
    - [ ] Basic support for code blocks

@@ -89,6 +89,10 @@ def execute(text: str):
 
 def gen_print_line(expr: str, line: int, start: int, end: int=-1):
 
+    if '=' in expr:
+        parts = expr.split('=')
+        expr = parts[1].strip()
+
     fmt_str = '_equals: {},{},{},{}'
     line = f"print('{fmt_str}'.format({line}, {start}, {end}, {expr}))"
     return line
