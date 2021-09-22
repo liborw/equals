@@ -1,22 +1,23 @@
 import datetime
 import numpy as np
 
+
 def addone(x):
     return x+1
 
-a = 2
-b = 8
-a + b #= 10
-a + a #= 4
 
-addone(a) #= 3
+a = 332
+b = 93
+a + b  #= 425
+a + a  #= 664
 
-datetime.datetime.now() #= 2021-09-20 23:18:30.688801
+addone(a)  #= 333
 
-c = a + b
-c #= 10
+datetime.datetime.now()  #= 2021-09-21 16:57:17.918677
 
-a = 1 + 3 #= 4
+c = a + b + 1
+c  #= 426
 
+a = 1 + 3  #= 4
 
-np.array([[12],[3],[4]]) #= [[12] # test
+np.array([12,3,4])  #= [12  3  4] # test

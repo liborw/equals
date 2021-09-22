@@ -1,85 +1,80 @@
 #!/usr/bin/env python
 
-""" Equals a proof of concept
-
-Usage:
-    equals [options] <infile>
-    equals [options] -
-
-Options:
-    -i, --in-place                  Edit file in place
-    -o OUTFILE, --output OUTFILE    Output to a file
-    -e, --edits
-    -d, --debug
-"""
-
-import re
 import subprocess
-import fileinput
 import sys
 import logging
-from docopt import docopt
+import click
+import fileinput
 
-TAG = '#='
+EQUALS_TAG = '#='
+COMMENT = '#'
+APP_NAME = 'equals'
 
-def main():
+log = logging.getLogger(APP_NAME)
 
-    # output is same as infile when edit in place is specified
-    if opt['--in-place']:
-        opt['--output'] = opt['<infile>']
 
-    # if input from stdin then output is to stdout
-    if opt['<infile>'] == '-':
-        opt['--output'] = None
+@click.command()
+@click.argument('input', type=click.Path(allow_dash=True), default='-')
+@click.option('-i', '--in-place', is_flag=True)
+@click.option('-d', '--debug', is_flag=True)
+@click.option('-o', '--output', type=click.Path(), required=False)
+@click.option('-u', '--updates-only', is_flag=True, help="Print just updates to the file")
+def cli(input, in_place, debug, output, updates_only):
 
+    # setup logging
+    logging.basicConfig(level='DEBUG' if debug else 'INFO')
+
+    # if editing in place output is same as input
+    if in_place and not input == '-':
+        output = input
 
     # read file into list of lines, without linebreaks
-    lines = []
-    with fileinput.input(files=[opt['<infile>']]) as f:
+    with fileinput.input(files=(input)) as f:
+        lines_in = []
         for line in f:
-            lines.append(line[:-1])
+            lines_in.append(line[:-1])
 
-    lines_ = preprocess_python(lines)
-
+    # preprocessing
+    lines_pp = preprocess_python(lines_in)
 
     # execute the modified code
-    text = '\n'.join(lines_)
+    text = '\n'.join(lines_pp)
     stdout, stderr = execute_python(text)
 
     # print error and exit if there is one
     if stderr:
         print("There was an error in the input:", file=sys.stderr)
         print(stderr, file=sys.stderr)
-        return
+        sys.exit(1)
 
     # post processing
     updates = postprocess_python(stdout.split('\n'))
 
-    # edits
-    if opt['--edits']:
-        for edit in updates:
-            print(edit)
-        return
+    # print updates if required
+    if updates_only:
+        for update in updates:
+            print(update)
+        sys.exit(0)
 
     # appli updates
-    lines = apply_updates(lines, updates)
+    lines_out = apply_updates(lines_in, updates)
 
     # output
-    src = '\n'.join(lines)
-    if opt['--output']:
-        with open(opt['--output'], 'w') as f:
-            f.write(src)
+    text = '\n'.join(lines_out)
+    if output:
+        with open(output, 'w') as f:
+            f.write(text)
     else:
-        print(src, end='')
+        print(text, end='')
 
 
 def execute_python(text: str):
 
     process = subprocess.Popen(
-            ['python'],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+        ['python'],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
     )
 
     stdout, stderr = process.communicate(input=text.encode())
@@ -87,15 +82,15 @@ def execute_python(text: str):
     return stdout.decode(), stderr.decode()
 
 
-def gen_print_line(expr: str, line: int, start: int, end: int=-1):
+def gen_print_line(expr: str, line: int, start: int, end: int = -1) -> str:
 
     if '=' in expr:
         parts = expr.split('=')
         expr = parts[1].strip()
 
     fmt_str = '_equals: {},{},{},{}'
-    line = f"print('{fmt_str}'.format({line}, {start}, {end}, {expr}))"
-    return line
+    line_out = f"print('{fmt_str}'.format({line}, {start}, {end}, {expr}))"
+    return line_out
 
 
 def parse_print_output(s: str):
@@ -112,15 +107,15 @@ def parse_print_output(s: str):
     return line, start, end, value
 
 
-def preprocess_python(lines_in:list[str]):
+def preprocess_python(lines_in: list[str]):
     lines_out = []
 
     for i, line in enumerate(lines_in):
         lines_out.append(line)
-        if TAG in line:
-            start = line.index(TAG)
+        if EQUALS_TAG in line:
+            start = line.index(EQUALS_TAG)
             expr = line[:start].strip()
-            start = start + len(TAG)
+            start = start + len(EQUALS_TAG)
             try:
                 end = start + line[start:].index('#')
             except ValueError:
@@ -130,14 +125,15 @@ def preprocess_python(lines_in:list[str]):
     return lines_out
 
 
-def postprocess_python(lines_in:list[str]):
+def postprocess_python(lines_in: list[str]):
     updates = []
     for line in lines_in:
         if line.startswith('_equals:'):
             updates.append(parse_print_output(line))
     return updates
 
-def apply_updates(lines:list[str], updates:list):
+
+def apply_updates(lines: list[str], updates: list):
     for update in updates:
         i, s, e, v = update
         line = lines[i]
@@ -146,9 +142,3 @@ def apply_updates(lines:list[str], updates:list):
         else:
             lines[i] = line[:s] + " " + v
     return lines
-
-if __name__ == "__main__":
-    opt = docopt(__doc__)
-    log = logging.getLogger('equals')
-    logging.basicConfig(level='DEBUG' if opt['--debug'] else 'INFO')
-    main()
