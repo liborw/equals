@@ -1,5 +1,7 @@
 import datetime
 import numpy as np
+import pint
+ureg = pint.UnitRegistry(auto_reduce_dimensions=True, autoconvert_offset_to_baseunit=True)
 
 
 def addone(x):
@@ -7,17 +9,20 @@ def addone(x):
 
 
 a = 332
-b = 93
-a + b  #= 425
+b = 9
+a + b  #= 341
 a + a  #= 664
 
 addone(a)  #= 333
 
-datetime.datetime.now()  #= 2021-09-21 16:57:17.918677
+datetime.datetime.now()  #= 2021-09-22 13:24:01.369485
 
 c = a + b + 1
-c  #= 426
+c  #= 342
 
 a = 1 + 3  #= 4
 
 np.array([12,3,4])  #= [12  3  4] # test
+
+
+test = 10e3 * ureg.V  #= 10000.0 volt

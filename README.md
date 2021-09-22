@@ -8,28 +8,27 @@ Equals is simple tool that evaluates source code, and places intermediate result
 Command line
 
 ```sh
-$ equals -h
+$ equals --help
 
- Equals a proof of concept
-
-Usage:
-    equals [options] <infile>
-    equals [options] -
+Usage: equals [OPTIONS] [INPUT]
 
 Options:
-    -i, --in-place                  Edits file in place
-    -o OUTFILE, --output OUTFILE    Output to a file
-    -e, --edits
+  -i, --in-place
+  -d, --debug
+  -o, --output PATH
+  -u, --updates-only  Print just updates to the file
+  --help              Show this message and exit.
+
 ```
 
 In vim
 
 ```vim
-" Run equals on visual selection
-:vnoremap qq c<C-R>=system('./equals -', @")<CR><ESC>
+" Map ee to run equals just for python (normal mode)
+autocmd FileType python nnoremap <buffer> ee me <bar> :%!./equals<CR> <bar> 'e <bar> :delmarks e<CR>
 
-" Run on whole buffer
-:map ee me <bar> :%!./equals -<CR> <bar> 'e <bar> :delmarks e<CR>
+" Map ee to run equals just for python (visual mode)
+autocmd FileType python vnoremap ee c<C-R>=system('./equals -', @")<CR><ESC>
 ```
 
 ## Roadmap
@@ -38,7 +37,7 @@ In vim
  - [x] Vim integration
  - [ ] Async vim integration
  - [ ] Multiline results
- - [ ] Move to click and setup tools
+ - [x] Move to click and setup tools
  - [ ] Markdown support
    - [ ] Basic support for code blocks
    - [ ] Support for inline code in `a #=`
