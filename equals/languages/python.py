@@ -22,15 +22,8 @@ def preprocess(lines_in: list[str]):
     for i, line in enumerate(lines_in):
         lines_out.append(line)
         if EQUALS_TAG in line:
-            start = line.index(EQUALS_TAG)
-            expr = line[:start].strip()
-            start = start + len(EQUALS_TAG)
-            try:
-                end = start + line[start:].index('#')
-            except ValueError:
-                end = -1
-            line = _gen_print_line(expr, i, start, end)
-            lines_out.append(line)
+            line_print = _process_equals_line(line, i)
+            lines_out.append(line_print)
     return lines_out
 
 
@@ -40,6 +33,18 @@ def postprocess(lines_in: list[str]):
         if line.startswith('_equals:'):
             updates.append(_parse_print_output(line))
     return updates
+
+
+def _split_equals_line(line):
+    start = line.index(EQUALS_TAG)
+    expr = line[:start].strip()
+    start = start + len(EQUALS_TAG)
+    try:
+        end = start + line[start:].index('#')
+    except ValueError:
+        end = -1
+
+    return start, end, expr
 
 
 def _gen_print_line(expr: str, line: int, start: int, end: int = -1) -> str:
