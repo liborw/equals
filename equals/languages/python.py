@@ -23,7 +23,7 @@ def preprocess(lines_in: list[str]) -> tuple[list[str], dict[int, EqualsLine]]:
 
     for i, line in enumerate(lines_in):
         lines_out.append(line)
-        if EQUALS_TAG in line:
+        if _is_equals_line(line):
             start, end, expr = _process_equals_line(line)
 
             el = EqualsLine(
@@ -38,6 +38,10 @@ def preprocess(lines_in: list[str]) -> tuple[list[str], dict[int, EqualsLine]]:
             lines_out.extend(line_print)
 
     return lines_out, equals_lines
+
+
+def _is_equals_line(line: str) -> bool:
+    return EQUALS_TAG in line
 
 
 def _process_equals_line(line: str) -> tuple[int, int, str]:

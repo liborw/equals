@@ -56,8 +56,8 @@ def cli(input, in_place, debug, output, updates_only, language):
 
     # print updates if required
     if updates_only:
-        for el in lines_eq:
-            print(el)
+        for el in lines_eq.values():
+            print(el.as_dict())
         sys.exit(0)
 
     # appli updates

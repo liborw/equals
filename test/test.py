@@ -2,6 +2,7 @@ import datetime
 import numpy as np
 import pint
 ureg = pint.UnitRegistry(auto_reduce_dimensions=True, autoconvert_offset_to_baseunit=True)
+ohm = ureg.ohm
 
 
 def addone(x):
@@ -15,7 +16,7 @@ a + a  #= 664
 
 addone(a)  #= 333
 
-datetime.datetime.now()  #= 2021-09-22 13:24:01.369485
+datetime.datetime.now()  #= 2021-09-24 13:31:30.998221
 
 c = a + b + 1
 c  #= 342
@@ -25,4 +26,11 @@ a = 1 + 3  #= 4
 np.array([12,3,4])  #= [12  3  4] # test
 
 
-test = 10e3 * ureg.V  #= 10000.0 volt
+test = 10e6 * ureg.V  #= 10000000.0 volt
+
+#%% Voltage divider
+
+Vin = 42 * ureg.V
+R1 = 100e3 * ohm
+R2 = 10e3 * ohm
+Vout = Vin*R2/(R1 + R2) #= 3.8181818181818183 volt

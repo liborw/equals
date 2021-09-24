@@ -1,7 +1,8 @@
 # Equals (#=)
 
-Equals is simple tool that evaluates source code, and places intermediate results as comments where specified by (#=). No that this version is just a proof of concept, it was inspired by the [codi.vim](https://github.com/metakirby5/codi.vim) and calca.
-
+p align="center">
+  <img src="gif/rec2.gif" alt="animated" />
+</p>
 
 ## Usage
 
@@ -16,8 +17,9 @@ Options:
   -i, --in-place
   -d, --debug
   -o, --output PATH
-  -u, --updates-only  Print just updates to the file
-  --help              Show this message and exit.
+  -u, --updates-only              Print just updates to the file
+  -l, --language [python|py|mdpy]
+  --help                          Show this message and exit.
 
 ```
 
@@ -38,11 +40,10 @@ autocmd FileType python vnoremap ee c<C-R>=system('./equals -', @")<CR><ESC>
  - [ ] Async vim integration
  - [ ] Multiline results
  - [x] Move to click and setup tools
+ - [ ] Improved formating
  - [ ] Markdown support
-   - [ ] Basic support for code blocks
+   - [x] Basic support for code blocks
    - [ ] Support for inline code in `a #=`
-
-
 
 
 

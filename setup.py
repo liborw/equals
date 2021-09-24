@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name='equals',
     version='0.2.0',
-    py_modules=['equals'],
+    py_modules=find_packages(),
     install_requires=[
         'Click',
     ],

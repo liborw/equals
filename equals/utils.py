@@ -22,6 +22,14 @@ class EqualsLine(object):
 
         return [line_out]
 
+    def as_dict(self):
+        return {
+            "line_num": self.line_num,
+            "col_start": self.col_start,
+            "col_end": self.col_end,
+            "value": self.value
+        }
+
 
 def process_script_output(lines_in: list[str]) -> Iterator[tuple[int,list[str]]]:
 
