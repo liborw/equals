@@ -42,17 +42,15 @@ Plug 'liborw/equals', {'rtp': 'vim'}
 
  - [x] Support for assignments i.e. `a = 1 + 2 #= 3`
  - [x] Vim integration
- - [ ] Async vim integration
+ - [x] Async vim integration
  - [ ] Multiline results
  - [x] Move to click and setup tools
  - [ ] Improved formating
- - [ ] Improved error handling
+ - [x] Improved error handling
  - [ ] Markdown support
    - [x] Basic support for code blocks
    - [ ] Support for inline code in `a #=`
-
-
-
+ - [ ] Add more languages
 
 ## References
 
