@@ -58,5 +58,6 @@ autocmd FileType python vnoremap ee c<C-R>=system('./equals -', @")<CR><ESC>
 
 
 
+## References
 
-
+ - [Vim Loop Question on Reddit](https://www.reddit.com/r/neovim/comments/mw4oe7/lua_cleaning_up_vimloopspawn_properly/)

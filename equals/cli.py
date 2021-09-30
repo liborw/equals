@@ -4,6 +4,7 @@ import sys
 import logging
 import click
 import fileinput
+import json
 from equals.languages import langmap
 from equals.utils import process_script_output
 
@@ -56,8 +57,10 @@ def cli(input, in_place, debug, output, updates_only, language):
 
     # print updates if required
     if updates_only:
+        updates = []
         for el in lines_eq.values():
-            print(el.as_dict())
+            updates.append(el.as_dict())
+        print(json.dumps(updates))
         sys.exit(0)
 
     # appli updates
