@@ -5,6 +5,7 @@ from . import markdown
 langmap = {
     "python": python,
     "py": python,
-    "mdpy": markdown
+    "markdown": markdown,
+    "md": markdown
 }
 

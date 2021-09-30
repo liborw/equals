@@ -50,6 +50,7 @@ autocmd FileType python vnoremap ee c<C-R>=system('./equals -', @")<CR><ESC>
  - [ ] Multiline results
  - [x] Move to click and setup tools
  - [ ] Improved formating
+ - [ ] Improved error handling
  - [ ] Markdown support
    - [x] Basic support for code blocks
    - [ ] Support for inline code in `a #=`
