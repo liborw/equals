@@ -5,7 +5,7 @@ local uv = vim.loop
 local M = {}
 
 function M.setup()
-  api.nvim_set_keymap('n', 'ee', ':lua require("equals").buffer()', {expr = true, noremap = true})
+  api.nvim_set_keymap('n', 'ee', '<cmd>lua require("equals").buffer()', {expr = true, noremap = true})
 end
 
 -- apply single equals line edit
