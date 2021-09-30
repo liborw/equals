@@ -26,14 +26,10 @@ Options:
 
 ```
 
-In vim
+As neovim plugin
 
 ```vim
-" Map ee to run equals just for python (normal mode)
-autocmd FileType python nnoremap <buffer> ee me <bar> :%!./equals<CR> <bar> 'e <bar> :delmarks e<CR>
-
-" Map ee to run equals just for python (visual mode)
-autocmd FileType python vnoremap ee c<C-R>=system('./equals -', @")<CR><ESC>
+Plug 'liborw/equals', {'rtp': 'vim'}
 ```
 
 ## Similar tools
