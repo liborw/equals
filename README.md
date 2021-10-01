@@ -47,9 +47,9 @@ Plug 'liborw/equals', {'rtp': 'vim'}
  - [x] Move to click and setup tools
  - [ ] Improved formating
  - [x] Improved error handling
- - [ ] Markdown support
+ - [x] Markdown support
    - [x] Basic support for code blocks
-   - [ ] Support for inline code in `a #=`
+   - [x] Support for inline code in `a #=`
  - [ ] Add more languages
 
 ## References

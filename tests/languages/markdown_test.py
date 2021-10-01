@@ -26,6 +26,23 @@ class TestMarkdownModule(unittest.TestCase):
         assert el[2].expression == '1 + 1'
         assert output == lines_out
 
+    def test_preporcess_inline(self):
+
+        lines_in = [
+            "This is a test:",
+            "This `1 + 1 #=` is an inline expression",
+        ]
+
+        lines_out = [
+            "print('_equals_start:1')",
+            "print(1 + 1)",
+            "print('_equals_end:1')",
+        ]
+
+        output, el = lang.preprocess(lines_in)
+        assert el[1].line_num == 1
+        assert el[1].expression == '1 + 1'
+        assert output == lines_out
 
 if __name__ == '__main__':
     unittest.main()

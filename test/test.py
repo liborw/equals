@@ -16,14 +16,14 @@ a + a  #= 664
 
 addone(a)  #= 333
 
-datetime.datetime.now()  #= 2021-09-30 22:02:29.808442
+datetime.datetime.now()  #= 2021-10-01 10:27:40.419836
 
 c = a + b + 1
 c  #= 342
 
 a = 1 + 3  #= 4
 
-np.array([12,3,4])  #= [12  3  4] # test
+np.array([12,3,4])  #= [12  3  4]# test
 
 
 test = 10e6 * ureg.V  #= 10000000.0 volt

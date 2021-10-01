@@ -11,10 +11,9 @@ date:   2021-09-23
 ```python
 
 a = 1
-b = 2
-c = a + b #=
+b = 4
+c = a + b #= 5
 
 ```
 
- - Inline code `c #= ` like so
-
+ - Inline code `c #= 5` like so
