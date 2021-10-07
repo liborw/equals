@@ -20,9 +20,13 @@ local function update_line(line, col_start, col_end, text)
     col_end = #lines[1]
   end
 
-  -- Add space before the result
+  -- Add space before and after the result the result
   for i = 1, #text do
     text[i] = " " .. text[i]
+
+    if col_end >= 0 then
+      text[i] = text[i] .. " "
+    end
   end
 
   -- update lines
