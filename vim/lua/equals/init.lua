@@ -4,8 +4,30 @@ local uv = vim.loop
 
 local M = {}
 
-function M.setup()
-  api.nvim_set_keymap('n', 'ee', '<cmd>lua require("equals").buffer()<cr>', {noremap = true})
+local function script_path()
+   local str = debug.getinfo(2, "S").source:sub(2)
+   return str:match("(.*/)")
+end
+
+local default_options = {
+  set_keys = true,
+  equals_path = script_path(),
+}
+
+function M.setup(options)
+
+  -- Setup options
+  if options then
+    M.options = options
+  else
+    M.options = default_options
+  end
+
+  -- Set keys if requested
+  if M.options.set_keys then
+    api.nvim_set_keymap('n', 'ee', '<cmd>lua require("equals").buffer()<cr>', {noremap = true})
+  end
+
 end
 
 -- apply single equals line edit
@@ -104,6 +126,40 @@ function M.buffer()
   local cmd = 'equals'
   local args = {'-l', filetype, '-u'}
   buf_to_stdin(cmd, args, parse_stdout)
+
+end
+
+function M.status()
+
+  local start_win = vim.api.nvim_get_current_win()
+
+  vim.api.nvim_command('botright vnew')
+  local win = vim.api.nvim_get_current_win()
+  local buf = vim.api.nvim_get_current_buf()
+
+  vim.api.nvim_buf_set_name(buf, 'Equals Status #' .. buf)
+  vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
+  vim.api.nvim_buf_set_option(buf, 'swapfile', false)
+  vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+
+  local function lines(str)
+    local result = {}
+    for line in str:gmatch("[^\r\n]+") do
+        table.insert(result, line)
+    end
+    return result
+  end
+
+  local list = {}
+
+  table.insert(list, "# Options")
+
+  for key, value in pairs(M.options) do
+    table.insert(list, string.format("  %s = %s", key, value))
+  end
+
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, list)
+
 
 end
 
