@@ -124,7 +124,7 @@ function M.buffer()
   local buf = api.nvim_get_current_buf()
   local filetype = api.nvim_buf_get_option(buf, 'filetype')
   local cmd = 'equals'
-  local args = {'-l', filetype, '-u'}
+  local args = {'-l', filetype, '-u', '-'}
   buf_to_stdin(cmd, args, parse_stdout)
 
 end

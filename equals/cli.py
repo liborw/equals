@@ -1,10 +1,22 @@
-#!/usr/bin/env python
+"""Equals (#=): evaluate and update script
+
+Usage:
+    equals [options] <input>
+
+Options:
+    -i, --in-place
+    -d, --debug
+    -o PATH, --output PATH
+    -u, --updates-only
+    -l LANG, --language LANG
+
+"""
 
 import sys
 import logging
-import click
 import fileinput
 import json
+import docopt
 from equals.languages import langmap
 from equals.utils import process_script_output
 
@@ -13,14 +25,18 @@ APP_NAME = 'equals'
 log = logging.getLogger(APP_NAME)
 
 
-@click.command()
-@click.argument('input', type=click.Path(allow_dash=True), default='-')
-@click.option('-i', '--in-place', is_flag=True)
-@click.option('-d', '--debug', is_flag=True)
-@click.option('-o', '--output', type=click.Path(), required=False)
-@click.option('-u', '--updates-only', is_flag=True, help="Print just updates to the file")
-@click.option('-l', '--language', default="python", type=click.Choice(list(langmap.keys())))
-def cli(input, in_place, debug, output, updates_only, language):
+def main():
+
+    # Process comman line arguments
+    args = docopt.docopt(__doc__)
+
+    in_place = args['--in-place']
+    debug = args['--debug']
+    output = args['--output']
+    updates_only = args['--updates-only']
+    language = args['--language']
+    filepath = args['<input>']
+
 
     # setup logging
     logging.basicConfig(level='DEBUG' if debug else 'INFO')
@@ -29,14 +45,15 @@ def cli(input, in_place, debug, output, updates_only, language):
     lang = langmap[language]
 
     # if editing in place output is same as input
-    if in_place and not input == '-':
-        output = input
+    if in_place and not filepath == '-':
+        output = filepath
 
     # read file into list of lines, without linebreaks
-    with fileinput.input(files=(input)) as f:
-        lines_in = []
-        for line in f:
-            lines_in.append(line[:-1])
+    f = fileinput.input(files=(filepath, ))
+    lines_in = []
+    for line in f:
+        lines_in.append(line[:-1])
+    f.close()
 
     # preprocessing
     lines_pp, lines_eq = lang.preprocess(lines_in)
