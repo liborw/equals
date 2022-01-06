@@ -16,7 +16,7 @@ a + a  #= 664
 
 addone(a)  #= 333
 
-datetime.datetime.now()  #= 2021-10-01 10:27:40.419836
+datetime.datetime.now()  #= 2021-10-01 16:03:58.042935
 
 c = a + b + 1
 c  #= 342
@@ -30,7 +30,7 @@ test = 10e6 * ureg.V  #= 10000000.0 volt
 
 #%% Voltage divider
 
-Vin = 42 * ureg.V
+Vin = 45 * ureg.V
 R1 = 100e3 * ohm
 R2 = 10e3 * ohm
-Vout = Vin*R2/(R1 + R2) #= 3.8181818181818183 volt
+Vout = Vin*R2/(R1 + R2) #= 4.090909090909091 volt

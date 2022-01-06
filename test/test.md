@@ -10,10 +10,10 @@ date:   2021-09-23
 
 ```python
 
-a = 1
-b = 4
-c = a + b #= 5
+a = 8
+b = 7
+c = a + b #= 15
 
 ```
 
- - Inline code `c #= 5` like so
+ - Inline code `c #= 15` like so

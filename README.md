@@ -52,6 +52,10 @@ Plug 'liborw/equals', {'rtp': 'vim'}
    - [x] Support for inline code in `a #=`
  - [ ] Add more languages
 
+### Known issues
+
+ -
+
 ## References
 
  - [Vim Loop Question on Reddit](https://www.reddit.com/r/neovim/comments/mw4oe7/lua_cleaning_up_vimloopspawn_properly/)
