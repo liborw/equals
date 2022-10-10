@@ -24,19 +24,42 @@ APP_NAME = 'equals'
 
 log = logging.getLogger(APP_NAME)
 
+import argparse
+import pathlib
+
+
+def parse_args(args=None) -> argparse.Namespace:
+
+    epilog="""
+
+    Known languages:
+    """
+    epilog += ', '.join(langmap.keys())
+
+    # command line interface
+    parser = argparse.ArgumentParser(prog=APP_NAME, epilog=epilog)
+
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument('-i', '--in-place', action='store_true', help='Update the input file in place.')
+    group.add_argument('-o', '--output', type=pathlib.Path, help='Output file')
+    group.add_argument('-u', '--updates-only', action='store_true', help="Print out only updateted values in json format.")
+
+    parser.add_argument('-d', '--debug', action='store_true', help="Run in debug mode.")
+    parser.add_argument('-l', '--lang', type=str, help='Input language')
+    parser.add_argument('input', type=str, help="Input file, for input from stdin use '-' as in input.")
+
+    return parser.parse_args(args)
+
 
 def main():
+    args = parse_args()
 
-    # Process comman line arguments
-    args = docopt.docopt(__doc__)
-
-    in_place = args['--in-place']
-    debug = args['--debug']
-    output = args['--output']
-    updates_only = args['--updates-only']
-    language = args['--language']
-    filepath = args['<input>']
-
+    in_place = args.in_place
+    debug = args.debug
+    output = args.output
+    updates_only = args.updates_only
+    language = args.lang
+    filepath = args.input
 
     # setup logging
     logging.basicConfig(level='DEBUG' if debug else 'INFO')

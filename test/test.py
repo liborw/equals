@@ -23,7 +23,7 @@ c  #= 342
 
 a = 1 + 3  #= 4
 
-np.array([12,3,4])  #= [12  3  4]# test
+np.array([12,3,4])  #= [12  3  4] # test
 
 
 test = 10e6 * ureg.V  #= 10000000.0 volt
