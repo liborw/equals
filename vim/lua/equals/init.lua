@@ -55,10 +55,11 @@ local function update_line(line, col_start, col_end, text)
   api.nvim_buf_set_text(buf, line, col_start, line, col_end, text)
 end
 
-
+-- take whole buffer and retur int as a text
 local function buffer_to_string()
   local buf = api.nvim_get_current_buf()
   local text = api.nvim_buf_get_lines(buf, 0, -1, false)
+	table.insert(text, "") -- Somehow last character gets lost, this should fix it
   return table.concat(text, '\n')
 end
 
@@ -78,6 +79,7 @@ local function close_handle(handle)
     if handle and not handle:is_closing() then handle:close() end
 end
 
+-- send buffer content to stdin
 local function buf_to_stdin(cmd, args, handler)
     local output = ""
     local stderr_output = ""
@@ -119,6 +121,7 @@ local function buf_to_stdin(cmd, args, handler)
     stdin:write(buffer_to_string(), function() stdin:close() end)
 end
 
+-- apply equals to current buffer
 function M.buffer()
 
   local buf = api.nvim_get_current_buf()
@@ -159,8 +162,6 @@ function M.status()
   end
 
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, list)
-
-
 end
 
 return M
