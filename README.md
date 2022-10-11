@@ -13,13 +13,13 @@ Equals is a result of a search for a simple text editor based calculator, the id
 As neovim plugin using [vim-plug](https://github.com/junegunn/vim-plug):
 
 ```vim
-Plug 'liborw/equals'
+Plug 'liborw/equals', { 'do': 'pip install --user .'}
 ```
 
 As neovim plugin using [vim-jetpack](https://github.com/tani/vim-jetpack):
 
 ```lua
-use {'liborw/equals'}
+use {'liborw/equals', run = 'pip install --user .'}
 ```
 
 As standalone tool using pip:
