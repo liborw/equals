@@ -36,7 +36,6 @@ def preprocess(lines_in: list[str]) -> tuple[list[str], dict[int, EqualsLine]]:
 
         elif line.startswith('```python'):
             in_code_block = True
-
         else:
             for match in re_inline.finditer(line):
 

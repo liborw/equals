@@ -89,6 +89,8 @@ def main():
     if stderr:
         print("There was an error in the input:", file=sys.stderr)
         print(stderr, file=sys.stderr)
+        print("The input is:", file=sys.stderr)
+        print(text, file=sys.stderr)
         sys.exit(1)
 
     # post processing
